@@ -1,0 +1,2 @@
+Output pc_id_o, pc_if_o to CSR module for pc status analysis.
+instruction addr is for instruction fetch from cache.
