@@ -1,0 +1,34 @@
+## using array, tcl support string indexed array (associative array)
+set bt_in_port(COEXIF_I) [get_ports -of [get_nets -of [get_pins -of_objects u_rw_dm_top -filter "full_name =~ *$COEXIF_I*"]]]
+set bt_out_port(COEXIF_O) [get_ports -of [get_nets -of [get_pins -of_objects u_rw_dm_top -filter "full_name =~ *$COEXIF_O*"]]]
+
+## tcl initial data type list
+set defined_bt_in ""
+foreach group [array names bt_in_port *] {
+        if {[sizeof_collection $bt_in_port($group)]} {
+                lappend $defined_bt_in [list $bt_in_port($group)]
+                switch -regexp $group {
+                        .*CKIF_I* {
+                                set_input_delay $HDTARVALTIME -clock v_hclk $bt_in_port($group)
+                        }
+                        .*LPIF_I* {
+                                set_input_delay $LPDTARVALTIME -clock v_low_power_clk $bt_in_port($group)
+                        }
+                        .*COEXIF_I* {
+                                set_input_delay $DTARVALTIME -clock v_dmmaster2_gclk $bt_in_port($group)
+                        }
+                        .*RFIF_I* {
+                                set_input_delay $DTARVALTIME -clock v_dmmaster2_gclk $bt_in_port($group)
+                        }
+                        .*PCMIF_I* {
+                                set_input_delay $DTARVALTIME -clock v_pcm_gclk $bt_in_port($group)
+                        }
+                        .*AHBIF_I* {
+                                set_input_delay $HDTARVALTIME -clock v_dm_hgclk $bt_in_port($group)
+                        }
+                        .*EMIF_I* {
+                                set_input_delay $HDTARVALTIME -clock v_hclk $bt_in_port($group)
+                        }
+                }
+        }
+}
